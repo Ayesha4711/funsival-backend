@@ -10,7 +10,7 @@ function normalizeSecret(value) {
   return typeof value === 'string' ? value.replace(/\s+/g, '') : '';
 }
 
-const requiredEnvironmentVariables = ['MONGODB_URI', 'JWT_SECRET', 'RESEND_API_KEY'];
+const requiredEnvironmentVariables = ['MONGODB_URI', 'JWT_SECRET', 'BREVO_API_KEY'];
 const missingEnvironmentVariables = requiredEnvironmentVariables.filter(
   (variableName) => !process.env[variableName]
 );
@@ -38,6 +38,7 @@ module.exports = {
   passwordResetTokenTtlMinutes: process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES
     ? Number(process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES)
     : 15,
-  resendApiKey: normalizeSecret(process.env.RESEND_API_KEY),
-  mailFrom: normalizeString(process.env.MAIL_FROM),
+  brevoApiKey: normalizeSecret(process.env.BREVO_API_KEY),
+  mailFrom: normalizeString(process.env.MAIL_FROM) || 'no-reply@funsival.com',
+  mailFromName: normalizeString(process.env.MAIL_FROM_NAME) || 'Funsival',
 };

@@ -279,29 +279,12 @@ async function googleAuthenticate(payload) {
   }
 
   const role = payload.role || USER_ROLES.USER;
-  const errors = {};
-
-  if (!payload.city) {
-    errors.city = 'City is required for first-time Google sign-in.';
-  }
-
-  if (role === USER_ROLES.HOST && !payload.agencyName) {
-    errors.agencyName = 'Agency name is required for host Google sign-in.';
-  }
-
-  if (Object.keys(errors).length > 0) {
-    throw new ApiError(
-      400,
-      'Additional profile details are required to create a Google account.',
-      errors
-    );
-  }
 
   user = await User.create({
     role,
     email: googleAccount.email,
-    city: payload.city,
-    ...(role === USER_ROLES.HOST ? { agencyName: payload.agencyName } : {}),
+    ...(payload.city ? { city: payload.city } : {}),
+    ...(role === USER_ROLES.HOST && payload.agencyName ? { agencyName: payload.agencyName } : {}),
     authProviders: [AUTH_PROVIDERS.GOOGLE],
     googleId: googleAccount.googleId,
     isEmailVerified: true,
